@@ -1,7 +1,8 @@
 import { io } from 'socket.io-client'
 import { appendUpdate } from './messages'
 
-const socket = io('http://localhost:3002')
+// const socket = io('http://localhost:3002')
+const socket = io('https://https://starbase-updates-backend.onrender.com:3002')
 
 // socket io stuff
 socket.on('connect', () => {
