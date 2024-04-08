@@ -49,8 +49,8 @@ async function getLoggedInInfo() {
 async function getAuth(userId) {
     auth = fetch(`${backendAPIURL}check-dc-user?userId=${userId}`).then(async (res)=>{
         data = await res.json()
-        if (data.dc_id) {return true}
-        else {return false}
+        if (data.dc_id == 0) {return false}
+        else {return true}
     })
     return auth
 }

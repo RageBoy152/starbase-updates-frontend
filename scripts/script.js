@@ -56,7 +56,7 @@ export function submitForm(form) {
 
 
     //  check users login status
-    getLoggedInInfo().then((res)=>{
+    getLoggedInInfo().then(async(res)=>{
         if (res.message=='401: Unauthorized') {
             notification([{
                 "heading": `Error ${formActionVerbForNotifications} update`,
@@ -82,7 +82,8 @@ export function submitForm(form) {
             }
         }
 
-        if (!getAuth(res.id)) {
+        let userHasAuth = await getAuth(res.id)
+        if (!userHasAuth) {
             // user does not have perms to add updates.
             notification([{
                 "heading": `Error ${formActionVerbForNotifications} update`,
