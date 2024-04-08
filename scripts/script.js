@@ -104,7 +104,7 @@ export function submitForm(form) {
             form.vehicle.value = null
             form.message.value = null
 
-            toggleEditUpdateUI('hide')
+            if (updateId) {toggleEditUpdateUI('hide')}
 
 
             // valid input, send fetch with queries to server to upload new update
