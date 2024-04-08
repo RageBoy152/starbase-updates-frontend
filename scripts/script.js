@@ -2,7 +2,7 @@
 import { appendUpdate } from './messages.js'
 
 // const socket = io('http://localhost:3002')
-const socket = io('https://starbase-updates-backend.onrender.com:3002')
+const socket = io('https://starbase-updates-backend.onrender.com')
 
 // socket io stuff
 socket.on('connect', () => {
@@ -10,7 +10,7 @@ socket.on('connect', () => {
 
     // resfresh feed broadcast
     socket.on('refresh-feed',(newUpdate,editedUpdateId)=>{
-        console.log(newUpdate,editedUpdateId)
+        // console.log(newUpdate,editedUpdateId)
         if (editedUpdateId) {
             // edited update, find and remove original from html then proceed with regular adding
             $(`.update-${editedUpdateId}`).remove()
