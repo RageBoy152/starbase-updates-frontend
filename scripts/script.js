@@ -27,7 +27,8 @@ socket.on('connect', () => {
             "timestamp": updateElem.getAttribute('data-timestamp'),
             "location": updateElem.getAttribute('data-location'),
             "vehicle": updateElem.getAttribute('data-vehicle'),
-            "body": updateElem.getAttribute('data-body')
+            "body": updateElem.getAttribute('data-body'),
+            "userId": updateElem.getAttribute('data-userid')
         })}
     })
 
@@ -200,6 +201,15 @@ export function deleteUpdate(updateId) {
 
 //  HANDLES TOGGLING EDITING UPDATE FORM
 export function toggleEditUpdateUI(updateData) {
+    if (updateData.userId != loggedInUserInfo.id) {
+        notification([{
+            "heading": "Error editing update.",
+            "body": "You can't edit an update that isn't yours.",
+            "status": "danger"
+        }])
+        return
+    }
+
     let form = $('#messageInput')[0]
 
     if (updateData == 'hide') {

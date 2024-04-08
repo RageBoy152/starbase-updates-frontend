@@ -59,7 +59,7 @@ export function appendUpdate(update) {
 
     // appends
     $('#messagesContainer')[0].innerHTML = `
-        <div class="container-fluid border-bottom border-top border-white p-4 update-${update._id}" data-timestamp="${update.userTimestamp}" data-location="${update.location}" data-vehicle="${update.vehicle}" data-body="${update.body}" id="${update._id}">
+        <div class="container-fluid border-bottom border-top border-white p-4 update-${update._id}" data-timestamp="${update.userTimestamp}" data-location="${update.location}" data-vehicle="${update.vehicle}" data-body="${update.body}" data-userid="${update.userId}" id="${update._id}">
 
             <div class="row align-items-center justify-content-start gy-3 g-lg-0 position-relative">
                 <div class="col-1 col-lg-1 d-inline-flex justify-content-center me-2 me-lg-0">
