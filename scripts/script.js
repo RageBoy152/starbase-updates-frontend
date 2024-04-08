@@ -120,7 +120,7 @@ export function submitForm(form) {
 
 
             // valid input, send fetch with queries to server to upload new update
-            fetch(`${backendAPIURL}add-update?timestamp=${timestamp}&location=${u_location}&vehicle=${vehicle}&message=${message}&userId=${loggedInUserInfo.id}&userAvatar=${loggedInUserInfo.avatar}&userName=${loggedInUserInfo.username}&updateId=${updateId}`).then(async (res)=>{
+            fetch(`${backendAPIURL}add-update?timestamp=${timestamp}&location=${u_location}&vehicle=${vehicle}&message=${message}&userId=${res.id}&userAvatar=${loggedInUserInfo.avatar}&userName=${loggedInUserInfo.username}&updateId=${updateId}`).then(async (res)=>{
                 let resJson = await res.json()
                 if (resJson.err) {
                     // issue with pushing update
@@ -201,15 +201,6 @@ export function deleteUpdate(updateId) {
 
 //  HANDLES TOGGLING EDITING UPDATE FORM
 export function toggleEditUpdateUI(updateData) {
-    if (updateData.userId != loggedInUserInfo.id) {
-        notification([{
-            "heading": "Error editing update.",
-            "body": "You can't edit an update that isn't yours.",
-            "status": "danger"
-        }])
-        return
-    }
-
     let form = $('#messageInput')[0]
 
     if (updateData == 'hide') {
@@ -229,6 +220,15 @@ export function toggleEditUpdateUI(updateData) {
         form.vehicle.value = null
         form.u_location.value = ''
         form.message.value = null
+        return
+    }
+    
+    if (updateData.userId != loggedInUserInfo.id) {
+        notification([{
+            "heading": "Error editing update.",
+            "body": "You can't edit an update that isn't yours.",
+            "status": "danger"
+        }])
         return
     }
 

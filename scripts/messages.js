@@ -134,7 +134,8 @@ fetch(`${backendAPIURL}get-updates`).then(async (res)=>{
             "timestamp": updateElem.getAttribute('data-timestamp'),
             "location": updateElem.getAttribute('data-location'),
             "vehicle": updateElem.getAttribute('data-vehicle'),
-            "body": updateElem.getAttribute('data-body')
+            "body": updateElem.getAttribute('data-body'),
+            "userId": updateElem.getAttribute('data-userid')
         })}
     }
     
