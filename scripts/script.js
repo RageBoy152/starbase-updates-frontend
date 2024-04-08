@@ -120,6 +120,8 @@ export function submitForm(form) {
 
 
             // valid input, send fetch with queries to server to upload new update
+            // res.id = '523327414026371082'
+            // console.log(res.id)
             fetch(`${backendAPIURL}add-update?timestamp=${timestamp}&location=${u_location}&vehicle=${vehicle}&message=${message}&userId=${res.id}&userAvatar=${loggedInUserInfo.avatar}&userName=${loggedInUserInfo.username}&updateId=${updateId}`).then(async (res)=>{
                 let resJson = await res.json()
                 if (resJson.err) {
@@ -222,7 +224,7 @@ export function toggleEditUpdateUI(updateData) {
         form.message.value = null
         return
     }
-    
+
     if (updateData.userId != loggedInUserInfo.id) {
         notification([{
             "heading": "Error editing update.",
