@@ -1,4 +1,4 @@
-import io from 'socket.io-client'
+// import io from 'socket.io-client'
 import { appendUpdate } from './messages.js'
 
 // const socket = io('http://localhost:3002')
