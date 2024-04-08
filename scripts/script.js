@@ -2,7 +2,7 @@
 import { appendUpdate } from './messages.js'
 
 // const socket = io('http://localhost:3000')
-const socket = io('https://starbase-updates-backend.onrender.com:3000')
+const socket = io('https://starbase-updates-backend.onrender.com')
 
 // socket io stuff
 socket.on('connect', () => {
