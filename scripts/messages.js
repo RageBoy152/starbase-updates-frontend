@@ -1,5 +1,5 @@
-import { deleteUpdate } from './script'
-import { toggleEditUpdateUI } from './script'
+import { deleteUpdate } from './script.js'
+import { toggleEditUpdateUI } from './script.js'
 
 // appends given update object to list as formatted html
 export function appendUpdate(update) {
