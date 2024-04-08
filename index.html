@@ -98,16 +98,20 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-
     <script>
         // const backendAPIURL = 'http://localhost:3001/'
         const backendAPIURL = 'https://starbase-updates-backend.onrender.com/'
     </script>
+    <script type="module">
+        import * as defaults from './scripts/defaults.js'
+        import * as script from './scripts/script.js'
+        import * as messages from './scripts/messages.js'
+    </script>
     
     <script src="./scripts/user.js"></script>
-    <script src="./scripts/defaults.js" type="module"></script>
-    <script src="./scripts/script.js" type="module"></script>
-    <script src="./scripts/messages.js" type="module"></script>
+    <!-- <script src="./scripts/defaults" type="module"></script> -->
+    <!-- <script src="./scripts/script" type="module"></script> -->
+    <!-- <script src="./scripts/messages" type="module"></script> -->
     <script src="./scripts/ui.js"></script>
     <script>
         const toastElList = document.querySelectorAll('.toast')
