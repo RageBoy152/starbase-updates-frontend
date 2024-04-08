@@ -81,6 +81,16 @@ export function submitForm(form) {
                 return
             }
         }
+
+        if (!getAuth(res.id)) {
+            // user does not have perms to add updates.
+            notification([{
+                "heading": `Error ${formActionVerbForNotifications} update`,
+                "body": "You are not an authorised site contributor. Please dm @rage.boy on discord to find out how to become one.",
+                "status": "danger"
+            }])
+            return
+        }
         
 
         // auth is fine, continue with form processing
@@ -108,7 +118,7 @@ export function submitForm(form) {
 
 
             // valid input, send fetch with queries to server to upload new update
-            fetch(`${backendAPIURL}add-update?timestamp=${timestamp}&location=${u_location}&vehicle=${vehicle}&message=${message}&userId=693191740961718420&userAvatar=${loggedInUserInfo.avatar}&userName=${loggedInUserInfo.username}&updateId=${updateId}`).then(async (res)=>{
+            fetch(`${backendAPIURL}add-update?timestamp=${timestamp}&location=${u_location}&vehicle=${vehicle}&message=${message}&userId=${loggedInUserInfo.id}&userAvatar=${loggedInUserInfo.avatar}&userName=${loggedInUserInfo.username}&updateId=${updateId}`).then(async (res)=>{
                 let resJson = await res.json()
                 if (resJson.err) {
                     // issue with pushing update
@@ -140,7 +150,7 @@ export function deleteUpdate(updateId) {
         if (res.message=='401: Unauthorized') {
             notification([{
                 "heading": "Error deleting update",
-                "body": "You must be logged in to a moderator discord account to delete updates. <a href=''>Login</a>",
+                "body": "You must be logged in to a discord account to delete updates. <a href=''>Login</a>",
                 "status": "danger"
             }])
             $('body')[0].classList.removed('logged-in')
