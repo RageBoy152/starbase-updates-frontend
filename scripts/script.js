@@ -97,7 +97,7 @@ export function submitForm(form,pin) {
             if (!(uploaderId && uploaderId == res.id)) {
                 //  user isn't the uploader of the update, no auth to delete
                 notification([{
-                    "heading": `Error editing update`,
+                    "heading": `Error ${formActionVerbForNotifications} update`,
                     "body": "You can't do this.",
                     "status": "danger"
                 }])
