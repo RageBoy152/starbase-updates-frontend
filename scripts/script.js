@@ -21,6 +21,15 @@ socket.on('connect', () => {
         // add onclick event to deleteUpdate btn
         let updateElem = $('#messagesContainer > div')[0]
         let updateId = updateElem.id
+        $(`#messagesContainer > div .pin-update-btn`)[0].onclick = ()=>{submitForm({
+            "updateId": updateId,
+            "u_location": updateElem.getAttribute('data-timestamp'),
+            "location": updateElem.getAttribute('data-location'),
+            "vehicle": updateElem.getAttribute('data-vehicle'),
+            "message": updateElem.getAttribute('data-body'),
+            "userId": updateElem.getAttribute('data-userid'),
+            "pinned": updateElem.getAttribute('data-pinned')
+        },true)}
         $(`#messagesContainer > div .delete-update-btn`)[0].onclick = ()=>{deleteUpdate(updateId)}
         $(`#messagesContainer > div .edit-update-btn`)[0].onclick = ()=>{toggleEditUpdateUI({
             "updateId": updateId,
@@ -41,18 +50,31 @@ socket.on('connect', () => {
 
 
 // handles submition of update form
-export function submitForm(form) {
+export function submitForm(form,pin) {
     let formActionVerbForNotifications = 'adding'
     let formActionVerbForNotificationsAlt = 'post'
     let formActionVerbForNotificationsAlt2 = 'published'
     let updateId
+    let setPin = false
     if ($('body')[0].classList.contains('editingUpdate')) {
         // editing update
         formActionVerbForNotifications = 'editing'
         formActionVerbForNotificationsAlt = 'edit'
         formActionVerbForNotificationsAlt2 = 'edited'
         updateId = form.getAttribute('data-edit-updateid')
+    }   else if (pin) {
+        formActionVerbForNotifications = 'pinning'
+        formActionVerbForNotificationsAlt = 'pin'
+        formActionVerbForNotificationsAlt2 = 'pinned'
+        updateId = form.updateId
+        if (form.pinned != 'true') {setPin = true}
+        else {
+            formActionVerbForNotifications = 'unpinning'
+            formActionVerbForNotificationsAlt = 'unpin'
+            formActionVerbForNotificationsAlt2 = 'unpinned'
+        }
     }
+    
 
 
 
@@ -71,7 +93,7 @@ export function submitForm(form) {
 
         if (updateId) {
             //  check userauth res id against uploader id of update if editing
-            let uploaderId = $(`#${updateId} .uploader`)[0].id
+            let uploaderId = $(`.update-${updateId} .uploader`)[0].id
             if (!(uploaderId && uploaderId == res.id)) {
                 //  user isn't the uploader of the update, no auth to delete
                 notification([{
@@ -96,10 +118,21 @@ export function submitForm(form) {
         
 
         // auth is fine, continue with form processing
-        let timestamp = form.timestamp.value
-        let u_location = form.u_location.value
-        let vehicle = form.vehicle.value
-        let message = form.message.value
+        let timestamp
+        let u_location
+        let vehicle
+        let message
+        if (!pin) {
+            timestamp = form.timestamp.value
+            u_location = form.u_location.value
+            vehicle = form.vehicle.value
+            message = form.message.value
+        }   else {
+            timestamp = form.timestamp
+            u_location = form.location
+            vehicle = form.vehicle
+            message = form.message
+        }
 
 
         // input validation here
@@ -111,18 +144,20 @@ export function submitForm(form) {
             }])
         } else {
             // input validation has been completed, clear to erase form inputs.
-            form.timestamp.value = null
-            form.u_location.value = ''
-            form.vehicle.value = null
-            form.message.value = null
+            if (!pin) {
+                form.timestamp.value = null
+                form.u_location.value = ''
+                form.vehicle.value = null
+                form.message.value = null
+            }
 
-            if (updateId) {toggleEditUpdateUI('hide')}
+            if (updateId && !pin) {toggleEditUpdateUI('hide')}
 
 
             // valid input, send fetch with queries to server to upload new update
             // res.id = '523327414026371082'
             // console.log(res.id)
-            fetch(`${backendAPIURL}add-update?timestamp=${timestamp}&location=${u_location}&vehicle=${vehicle}&message=${message}&userId=${res.id}&userAvatar=${loggedInUserInfo.avatar}&userName=${loggedInUserInfo.username}&updateId=${updateId}`).then(async (res)=>{
+            fetch(`${backendAPIURL}add-update?timestamp=${timestamp}&location=${u_location}&vehicle=${vehicle}&message=${message}&userId=${res.id}&userAvatar=${loggedInUserInfo.avatar}&userName=${loggedInUserInfo.username}&updateId=${updateId}&pinned=${setPin}`).then(async (res)=>{
                 let resJson = await res.json()
                 if (resJson.err) {
                     // issue with pushing update
@@ -149,6 +184,7 @@ export function submitForm(form) {
 
 // handles deleting update
 export function deleteUpdate(updateId) {
+    console.log("deleting")
     //  check users login status
     getLoggedInInfo().then((res)=>{
         if (res.message=='401: Unauthorized') {

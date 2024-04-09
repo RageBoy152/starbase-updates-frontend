@@ -22,12 +22,67 @@
     <div class="toast-container position-fixed top-0 start-0" id="notification-toasts-container"></div>
 
 
+    <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">About Starbase Updates</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>We provide up to date information on what's happening in starbase right now. Our team of contributors help keep you updated on the recent events surrounding the starbase starship program.</p>
+                    <p>We do offer our API usage for your own dev projects.</p>
+                    
+                    <br>
+                    
+                    <strong>For enquiries please DM <a href="https://discordapp.com/users/693191740961718420" target="_blank">@rage.boy</a> on discord</strong>
+
+                    <h4 class="mt-5">Our contributors:</h4>
+                    <ul>
+                        <li><a href="https://discordapp.com/users/693191740961718420" target="_blank">@rage.boy</a></li>
+                        <li><a href="https://discordapp.com/users/523327414026371082" target="_blank">@wxring</a></li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="pinnedMsgsModal" tabindex="-1" aria-labelledby="pinnedMsgsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Pinned Updates</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <main class="container-md mx-auto d-flex flex-column-reverse" id="pinnedMsgsContainer">
+
+                    </main>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
     
     <nav class="container-fluid border-bottom shadow border-white py-4 bg-body fixed-top">
         <div class="container-md align-items-center mx-auto">
             <div class="row g-3 g-sm-0">
                 <div class="col d-flex justify-content-center align-items-center justify-content-sm-start" id="logInBtn">
                     <a href="https://discord.com/oauth2/authorize?client_id=1225936612043657227&response_type=token&redirect_uri=https%3A%2F%2Fstarbase-updates-frontend.onrender.com&scope=identify"><i class="bi bi-discord me-2"></i> Login</a>
+                </div>
+                <div class="col-3 d-flex justify-content-center align-items-center justify-content-sm-end fs-4">
+                    <a type="button" data-bs-toggle="modal" data-bs-target="#infoModal"><i class="bi bi-info-circle"></i></a>
+                </div>
+                <div class="col-1 d-flex justify-content-center align-items-center justify-content-sm-end me-5 fs-4">
+                    <a type="button" data-bs-toggle="modal" data-bs-target="#pinnedMsgsModal"><i class="bi bi-pin-angle"></i></a>
                 </div>
                 
                 <div class="col-12 col-sm-5 ms-auto d-flex justify-content-center align-items-center">

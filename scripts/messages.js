@@ -1,4 +1,5 @@
 import { deleteUpdate } from './script.js'
+import { submitForm } from './script.js'
 import { toggleEditUpdateUI } from './script.js'
 
 // appends given update object to list as formatted html
@@ -55,11 +56,17 @@ export function appendUpdate(update) {
         return "just now"
     }
 
+    let pinIFill = ''
+    let pinBtnMsg = 'Pin'
+    if (update.pinned) {
+        pinIFill = '-fill'
+        pinBtnMsg = 'Unpin'
+    }
 
 
     // appends
-    $('#messagesContainer')[0].innerHTML = `
-        <div class="container-fluid border-bottom border-top border-white p-4 update-${update._id}" data-timestamp="${update.userTimestamp}" data-location="${update.location}" data-vehicle="${update.vehicle}" data-body="${update.body}" data-userid="${update.userId}" id="${update._id}">
+    let updateElem = `
+        <div class="container-fluid border-bottom border-top border-white p-4 update-${update._id}" data-timestamp="${update.userTimestamp}" data-location="${update.location}" data-vehicle="${update.vehicle}" data-body="${update.body}" data-pinned="${update.pinned}" data-userid="${update.userId}" id="${update._id}">
 
             <div class="row align-items-center justify-content-start gy-3 g-lg-0 position-relative">
                 <div class="col-1 col-lg-1 d-inline-flex justify-content-center me-2 me-lg-0">
@@ -72,10 +79,13 @@ export function appendUpdate(update) {
                     <p class="ms-auto msg-options-dropdown-toggle" onclick="toggleDropDown(this)" role="button" style="z-index:1"><i class="bi bi-three-dots-vertical"></i></p>
                     <div class="container dropdown-msg-options flex-column">
                         <div class="row">
-                            <p role="button" id="text-danger" class="delete-update-btn mb-0">Delete <i class="bi bi-trash3 ms-1"></i></p>
+                            <p role="button" class="pin-update-btn mb-0">${pinBtnMsg} <i class="bi bi-pin-angle${pinIFill} ms-1"></i></p>
                         </div>
                         <div class="row">
                             <p role="button" class="edit-update-btn mb-0">Edit <i class="bi bi-pencil-fill ms-1"></i></p>
+                        </div>
+                        <div class="row">
+                            <p role="button" id="text-danger" class="delete-update-btn mb-0">Delete <i class="bi bi-trash3 ms-1"></i></p>
                         </div>
                     </div>
                 </div>
@@ -109,7 +119,13 @@ export function appendUpdate(update) {
             </div>
 
         </div>
-    ` + $('#messagesContainer')[0].innerHTML
+    `
+
+    let container = $('#messagesContainer')[0]
+    container.innerHTML = updateElem + $('#messagesContainer')[0].innerHTML
+    if (update.pinned) {$('#pinnedMsgsContainer')[0].innerHTML += updateElem}
+
+
 }
 
 
@@ -128,6 +144,15 @@ fetch(`${backendAPIURL}get-updates`).then(async (res)=>{
         let updateElem = $('#messagesContainer > div')[i]
         let updateId = updateElem.id
         
+        $(`#messagesContainer > div .pin-update-btn`)[i].onclick = ()=>{submitForm({
+            "updateId": updateId,
+            "timestamp": updateElem.getAttribute('data-timestamp'),
+            "location": updateElem.getAttribute('data-location'),
+            "vehicle": updateElem.getAttribute('data-vehicle'),
+            "message": updateElem.getAttribute('data-body'),
+            "userId": updateElem.getAttribute('data-userid'),
+            "pinned": updateElem.getAttribute('data-pinned')
+        },true)}
         $(`#messagesContainer > div .delete-update-btn`)[i].onclick = ()=>{deleteUpdate(updateId)}
         $(`#messagesContainer > div .edit-update-btn`)[i].onclick = ()=>{toggleEditUpdateUI({
             "updateId": updateId,

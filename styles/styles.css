@@ -25,6 +25,8 @@
 }
 .formInput {padding-block:0.8em!important;}
 nav .form-control:focus {border: 0!important;}
+nav a {color:#dadada!important}
+nav a:hover {color:#fff!important}
 
 
 #notification-toasts-container {padding:8em 2em;}
@@ -76,6 +78,15 @@ body:not(.logged-in) #messageInput {display:none;}
 #mobile-send-update-col {width:fit-content}
 #mobile-send-update-col i {margin-inline:0.5em}
 #msgInputBar.active {transform: translateY(0);}
+
+
+
+.modal main#pinnedMsgsContainer {
+    flex-direction: column-reverse!important;
+    overflow-y: hidden!important;
+    height:max-content!important;
+    margin:0!important;
+}
 
 
 
