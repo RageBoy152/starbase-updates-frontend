@@ -70,25 +70,39 @@
         </div>
     </div>
 
+
+
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="searchResults" data-bs-backdrop="static">
+        <div class="offcanvas-header">
+          <h2 class="offcanvas-title" id="searchResultsTitle">Showing x results for ''</h2>
+          <button type="button" class="btn-close" onclick="closeSearchResults()"></button>
+        </div>
+        <div class="offcanvas-body" id="searchResultsContainer">
+
+        </div>
+    </div>
+
+    
     
     
     <nav class="container-fluid border-bottom shadow border-white py-4 bg-body fixed-top">
         <div class="container-md align-items-center mx-auto">
-            <div class="row g-3 g-sm-0">
-                <div class="col d-flex justify-content-center align-items-center justify-content-sm-start" id="logInBtn">
+            <div class="row g-3 g-sm-0 position-relative">
+                <div class="col-8 col-md-2 d-flex justify-content-start align-items-center" id="logInBtn">
                     <a href="https://discord.com/oauth2/authorize?client_id=1225936612043657227&response_type=token&redirect_uri=https%3A%2F%2Fstarbase-updates-frontend.onrender.com&scope=identify"><i class="bi bi-discord me-2"></i> Login</a>
                 </div>
-                <div class="col-3 d-flex justify-content-center align-items-center justify-content-sm-end fs-4">
-                    <a type="button" data-bs-toggle="modal" data-bs-target="#infoModal"><i class="bi bi-info-circle"></i></a>
+                <div class="col d-flex justify-content-center align-items-center justify-content-sm-end ms-auto me-4">
+                    <a type="button" data-bs-toggle="modal" data-bs-target="#infoModal"><i  class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="About"></i></a>
                 </div>
-                <div class="col-1 d-flex justify-content-center align-items-center justify-content-sm-end me-5 fs-4">
-                    <a type="button" data-bs-toggle="modal" data-bs-target="#pinnedMsgsModal"><i class="bi bi-pin-angle"></i></a>
+                <div class="col-1 d-flex justify-content-center align-items-center">
+                    <a type="button" data-bs-toggle="modal" data-bs-target="#pinnedMsgsModal"><i class="bi bi-pin-angle" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Pinned Updates"></i></a>
                 </div>
                 
-                <div class="col-12 col-sm-5 ms-auto d-flex justify-content-center align-items-center">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2">
-                        <span class="input-group-text" id="basic-addon2" role="button"><i class="bi bi-search"></i></span>
+                <div class="searchBarCol col-12 col-sm-5 d-flex justify-content-center align-items-center">
+                    <div class="input-group justify-content-end">
+                        <input type="text" class="nav-search-input form-control" contenteditable="" aria-label="Search" aria-describedby="basic-addon2" placeholder="Search..."></input>
+                        <span class="input-group-text nav-search-span" id="basic-addon2" role="button" onclick="toggleSearchBarMobile();"><i class="bi bi-search"></i></span>
                     </div>
                 </div>
             </div>
@@ -133,10 +147,10 @@
                     <input type="text" class="form-control formInput" placeholder="Vehicle (BX / SX)" id="vehicle">
                 </div>
                 <div class="col">
-                    <textarea id="message" class="form-control formInput" rows="1" placeholder="Message..." style="max-height: 150px;" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
+                    <textarea id="message" class="form-control formInput" rows="1" placeholder="Message...  (CTRL+Enter to send)" style="max-height: 150px;" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
                 </div>
                 <div class="col-12" id="mobile-send-update-col">
-                    <button class="formInput form-control input-group-text bg-primary" type="submit" role="button" value=""><span class="mx-auto"><span id="mobile-send-update-text">Send Update</span> <i class="bi bi-send"></i></span></button>
+                    <button class="formInput form-control input-group-text bg-primary" type="submit" role="button" value="" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Send Update"><span class="mx-auto"><span id="mobile-send-update-text">Send Update</span> <i class="bi bi-send"></i></span></button>
                 </div>
             </form>
 
@@ -167,9 +181,12 @@
     <script src="./scripts/script.js" type="module"></script>
     <script src="./scripts/messages.js" type="module"></script>
     <script src="./scripts/ui.js"></script>
+
     <script>
         const toastElList = document.querySelectorAll('.toast')
         const toastList = [...toastElList].map(toastEl => new bootstrap.Toast(toastEl, option))
+
+        initTooltips()
     </script>
 </body>
 </html>

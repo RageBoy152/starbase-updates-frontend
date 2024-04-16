@@ -15,6 +15,40 @@
 ::-webkit-scrollbar {width:5px;}
 * {scroll-behavior: smooth;}
 
+
+.searchBarCol input, .searchBarCol span {font-size: 0.9em;}
+nav i {font-size:1.25em;}
+nav .input-group {height:100%;}
+
+
+
+#searchResults {width: 50vw!important;}
+
+
+.searchBarCol {
+    width:fit-content!important;
+}
+/* .searchBarCol .input-group {width:min-content!important} */
+
+
+.searchBarCol .nav-search-input {
+    position: relative!important;
+    width: 200px!important;
+    transition: all 0.4s ease-in-out;
+}
+.searchBarCol .nav-search-input:focus {
+    width: 400px!important;
+}
+
+.searchBarCol span {transition: border-radius 0.2s ease-in-out;border-top-right-radius:0.375rem!important;border-bottom-right-radius:0.375rem!important;}
+
+
+
+
+
+
+
+
 .input-group input, .input-group-text, .formInput, .formInput option {
     border: 0!important;
     background-color: var(--bs-tertiary-bg)!important;
@@ -23,49 +57,53 @@
 .form-control:focus, .formInput:focus {
     box-shadow: none!important;
 }
-.formInput {padding-block:0.8em!important;}
+#msgInputBar .formInput {padding-block:0.8em!important;}
 nav .form-control:focus {border: 0!important;}
-nav a {color:#dadada!important}
-nav a:hover {color:#fff!important}
+nav a, .searchBarCol span {color:#dadada!important}
+nav a:hover, .searchBarCol span:hover {color:#fff!important}
 
 
 #notification-toasts-container {padding:8em 2em;}
 
-main img.pfp {width:50px;}
+img.pfp {width:50px!important;}
 
 
 .msg-options-dropdown-toggle {display:none;}
 
-#messagesContainer {
+#messagesContainer, #searchResultsContainer {
     flex-direction: column-reverse!important;
     height:730px!important;margin-bottom:110px;
     overflow-y: auto;
+    padding-top:40px;
 }
+#searchResultsContainer {margin-bottom:50px;}
 body.editingUpdate #messagesContainer {height:680px!important;margin-bottom:160px;}
 
-#messagesContainer > div:hover {background-color:#3d3d3d1e;}
-#messagesContainer > div.active {background-color:#3d3d3d3b;}
-#messagesContainer > div:hover .msg-options-dropdown-toggle {display:block;}
+.update-object:hover {background-color:#3d3d3d1e;}
+.update-object.active {background-color:#3d3d3d3b;}
+
 body {overflow-y:hidden;}
 
+#upload-and-edit-times {cursor: default;}
 
 .dropdown-msg-options {
     position: absolute;
-    text-align:right;
-    gap:0.5em;
     display: none!important;
     right:0;
-    width:150px!important;
-    margin-right:30px!important;
+    top:0;
+    transform: translateY(-20px);
+    z-index:2;
+    width:fit-content!important;
 }
-.dropdown-msg-options.show {display:flex!important;}
+.update-object:hover .dropdown-msg-options {display:flex!important;}
 
-#text-danger:hover {color:red}
-.dropdown-msg-options .row p, .dropdown-msg-options .row {width:100%;margin-left:auto}
-.dropdown-msg-options .row p {background-color:#3d3d3d;border-radius:5px;padding:0.3em 1em;}
-.dropdown-msg-options .row p:hover {text-decoration:underline!important;}
+.dropdown-msg-options .col p {background-color:#3d3d3d;width:40px;height:40px;font-size:1.05em;}
+.dropdown-msg-options .col:last-child p {border-top-right-radius:5px;border-bottom-right-radius:5px;}
+.dropdown-msg-options .col:first-child p {border-top-left-radius:5px;border-bottom-left-radius:5px;}
+.dropdown-msg-options .col p:hover {background-color:#505050;}
 
 
+.text-teal {color:var(--bs-teal)}
 
 
 body.logged-in #loginMsgBar {display:none;}
@@ -86,6 +124,7 @@ body:not(.logged-in) #messageInput {display:none;}
     overflow-y: hidden!important;
     height:max-content!important;
     margin:0!important;
+    padding-top:40px;
 }
 
 
@@ -93,6 +132,49 @@ body:not(.logged-in) #messageInput {display:none;}
 @media only screen and (max-width:1400px) {
     #messagesContainer {height:670px!important;margin-bottom:170px;}
     body.editingUpdate #messagesContainer {height:620px!important;margin-bottom:230px;}
+}
+
+
+
+@media only screen and (max-width:800px) {
+    .searchBarCol {
+        width:100%!important;
+        margin-left:0!important;
+        margin-top:1em!important;
+    }
+
+
+    .searchBarCol .nav-search-input.active {width: 400px!important;}
+
+
+    .searchBarCol .nav-search-input {
+        width: 90%!important;
+        transform-origin: right;
+        transform: scaleX(0);
+        border-top-right-radius: 1rem!important;
+        border-bottom-right-radius: 1rem!important;
+        transition: transform 0.4s ease-in-out, border-radius 0.4s ease-in-out 0.3s;
+    }
+    .searchBarCol .nav-search-input:not(:placeholder-shown), .searchBarCol .nav-search-input.active {
+        transform: scaleX(1);
+        border-top-right-radius: 0!important;
+        border-bottom-right-radius: 0!important;
+    }
+    .searchBarCol:not(:has(.nav-search-input.active)) span {border-radius: 0.375rem!important;}
+    .searchBarCol:has(.nav-search-input:not(:placeholder-shown)) span {border-top-left-radius: 0!important;border-bottom-left-radius: 0!important;}
+}
+
+
+@media only screen and (max-width:457px) {
+    .searchBarCol span {
+        display:none;
+    }
+
+    .searchBarCol .nav-search-input, .searchBarCol .nav-search-input.active {
+        transform: scaleX(1);
+        border-top-right-radius: 0.375rem!important;
+        border-bottom-right-radius: 0.375rem!important;
+    }
 }
 
 
@@ -111,6 +193,9 @@ body:not(.logged-in) #messageInput {display:none;}
 
 
     .msg-options-dropdown-toggle {display:block;}
+
+
+    #searchResults {width: 100vw!important;}
 
 
     #notification-toasts-container {
