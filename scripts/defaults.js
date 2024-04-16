@@ -21,6 +21,9 @@ $('#messageInput #message')[0].addEventListener('keyup',e=>{
 $('.nav-search-input')[0].addEventListener('keydown',e=>{
     searchBarInput($('.nav-search-input')[0],e)
 })
+$('.nav-search-span')[0].addEventListener('click',e=>{
+    searchBarInput($('.nav-search-input')[0])
+})
 
 
 // searchBarInput(searchBar,e)

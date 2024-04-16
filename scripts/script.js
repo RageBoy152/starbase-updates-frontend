@@ -385,162 +385,163 @@ export async function copyLink(updateId, copyLinkBtnElem) {
 
 
 export async function searchBarInput(searchBar,e) {
-    
-    if (e.key === 'Enter') {
+    if (e) {
+        if (e.key !== 'Enter') {return}
         e.preventDefault()
+    }
+    
 
-        let searchQuery = searchBar.value
+    let searchQuery = searchBar.value
 
-        // input validation
-        if (searchQuery === '') {
+    // input validation
+    if (searchQuery === '') {
+        notification([
+            {
+                "heading": "Search Failed",
+                "body": "Invalid input.",
+                "status": "danger"
+            }
+        ])
+        return
+    }
+
+
+    fetch(`${backendAPIURL}search-updates?q=${searchQuery}`).then(async(res)=>{
+        let searchResults = await res.json()
+        let searchResultsBody = $('#searchResultsContainer')[0]
+
+        // add title to canvas
+        let resultText = 'results'
+        if (searchResults.length==1) {resultText = 'result'}
+        $('#searchResultsTitle')[0].innerText = `Showing ${searchResults.length} ${resultText} for '${searchBar.value}'`
+
+
+        // add updates to canvas
+        for (let i=0;i<searchResults.length;i++) {
+            let update = searchResults[searchResults.length-(i+1)]
+
+            // handles getting pfp url
+            if (update.userId=='693191740961718400') {update.userId = '693191740961718420'}
+            let pfpUrl = `https://cdn.discordapp.com/avatars/${update.userId}/${update.userAvatar}`
+            if (!update.userAvatar || update.userAvatar == 'null') {pfpUrl = `https://cdn.discordapp.com/embed/avatars/0.png`}
+
+
+            let pinIFill = ''
+            let pinBtnMsg = 'Pin'
+            if (update.pinned) {
+                pinIFill = '-fill'
+                pinBtnMsg = 'Unpin'
+            }
+
+            let editedLabel = ''
+            if (update.edited) {editedLabel = `<span id="edited-label" class="ms-3" data-bs-toggle="tooltip" data-bs-title="${update.updatedAt.split('.')[0].replace('T',' @ ')} UTC">Edited ${timeStrToXYAgo(update.updatedAt)}</span>`}
+
+
+            searchResultsBody.innerHTML += `
+                <div class="position-relative update-object container-fluid border-bottom border-top border-white p-4 update-${update._id}" data-timestamp="${update.userTimestamp}" data-location="${update.location}" data-vehicle="${update.vehicle}" data-body="${update.body}" data-pinned="${update.pinned}" data-userid="${update.userId}" data-edited=${update.edited} id="${update._id}">
+                    <div class="row align-items-center justify-content-start gy-3 g-lg-0">
+                    <div class="col-1 col-lg-1 d-inline-flex justify-content-center me-2 me-lg-0">
+                        <img src="${pfpUrl}" alt="PFP" class="pfp rounded-circle bg-secondary ratio ratio-1x1">
+                    </div>
+                    <div class="col-1 d-inline-flex justify-content-start ms-2">
+                        <p class="my-auto uploader" id="${update.userId}">@${update.userName}</p>
+                    </div>
+                    <div class="col-1 col-lg-1 d-inline-flex justify-content-start justify-content-lg-center ms-auto">
+                        <div class="container dropdown-msg-options flex-row">
+                            <div class="col">
+                                <p role="button" class="jump-to-btn mb-0 d-flex align-items-center justify-content-center" data-bs-toggle="tooltip" data-bs-title="Jump To"><i class="bi bi-box-arrow-in-up"></i></p>
+                            </div>
+                            <div class="col">
+                                <p role="button" class="copy-update-link-btn mb-0 d-flex align-items-center justify-content-center" data-bs-toggle="tooltip" data-bs-title="Copy Link"><i class="bi bi-link-45deg"></i></p>
+                            </div>
+                            <div class="col">
+                                <p role="button" class="pin-update-btn mb-0 d-flex align-items-center justify-content-center" data-bs-toggle="tooltip" data-bs-title="${pinBtnMsg} Update"><i class="bi bi-pin-angle${pinIFill}"></i></p>
+                            </div>
+                            <div class="col">
+                                <p role="button" class="edit-update-btn mb-0 d-flex align-items-center justify-content-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="bi bi-pencil-fill"></i></p>
+                            </div>
+                            <div class="col">
+                                <p role="button" id="text-danger" class="delete-update-btn mb-0 text-danger d-flex align-items-center justify-content-center" data-bs-toggle="tooltip" data-bs-title="Delete"><i class="bi bi-trash3"></i></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="row mt-3 px-xl-4 px-1 text-secondary">
+                    <div class="col d-inline-flex justify-content-start px-xl-4 px-1" id="upload-and-edit-times" data-created-at="${update.createdAt}" data-edited-at="${update.updatedAt}">
+                        <p class="my-auto"><span id="time-since-upload-text" data-bs-toggle="tooltip" data-bs-title="${update.createdAt.split('.')[0].replace('T',' @ ')} UTC">${timeStrToXYAgo(update.createdAt)}</span> ${editedLabel}</p>
+                    </div>
+                </div>
+        
+                <div class="row mt-3 px-xl-4 px-1">
+                    <div class="col d-inline-flex justify-content-start px-xl-4 px-1">
+                        <p class="my-auto">${update.body}</p>
+                    </div>
+                </div>
+        
+                <div class="row mt-3 px-xl-4 px-1 gy-1">
+                    <div class="col-12 d-inline-flex justify-content-start px-xl-4 px-1">
+                        <i class="bi bi-clock"></i>
+                        <p class="my-auto ms-3">${update.userTimestamp.replace('T', '<span class="mx-2">|</span>')}</p>
+                    </div>
+                    <div class="col-12 d-inline-flex justify-content-start px-xl-4 px-1">
+                        <i class="bi bi-rocket-takeoff"></i>
+                        <p class="my-auto ms-3">${update.vehicle}</p>
+                    </div>
+                    <div class="col-12 d-inline-flex justify-content-start px-xl-4 px-1">
+                        <i class="bi bi-geo-alt"></i>
+                        <p class="my-auto ms-3">${update.location}</p>
+                    </div>
+                </div>
+                </div>
+            `
+        }
+
+        if (searchResults.length==0) {
+            searchResultsBody.innerHTML += `<p>No results.</p>`
+        }
+
+        // add functionality to btns
+        for (let i=0;i<$('#searchResultsContainer > div').length;i++) {
+            let updateElem = $('#searchResultsContainer > div')[i]
+            let updateId = updateElem.id
+            $(`#searchResultsContainer > div .pin-update-btn`)[i].onclick = ()=>{submitForm({
+                "updateId": updateId,
+                "timestamp": updateElem.getAttribute('data-timestamp'),
+                "location": updateElem.getAttribute('data-location'),
+                "vehicle": updateElem.getAttribute('data-vehicle'),
+                "message": updateElem.getAttribute('data-body'),
+                "userId": updateElem.getAttribute('data-userid'),
+                "pinned": updateElem.getAttribute('data-pinned')
+            },true)}
+            $(`#searchResultsContainer > div .delete-update-btn`)[i].onclick = ()=>{deleteUpdate(updateId)}
+            $(`#searchResultsContainer > div .copy-update-link-btn`)[i].onclick = ()=>{copyLink(updateId, $(`#searchResultsContainer > div .copy-update-link-btn`)[i])}
+            $(`#searchResultsContainer > div .jump-to-btn`)[i].onclick = ()=>{closeSearchResults();jumpToMessage(updateId)}
+            $(`#searchResultsContainer > div .edit-update-btn`)[i].onclick = ()=>{toggleEditUpdateUI({
+                "updateId": updateId,
+                "timestamp": updateElem.getAttribute('data-timestamp'),
+                "location": updateElem.getAttribute('data-location'),
+                "vehicle": updateElem.getAttribute('data-vehicle'),
+                "body": updateElem.getAttribute('data-body'),
+                "userId": updateElem.getAttribute('data-userid')
+            })}
+        }
+        initTooltips()
+            
+        }).catch((err)=>{
+            // issue with search fetch
+            console.log(err)
             notification([
                 {
                     "heading": "Search Failed",
-                    "body": "Invalid input.",
+                    "body": err,
                     "status": "danger"
                 }
             ])
             return
-        }
+        })
 
-
-        fetch(`${backendAPIURL}search-updates?q=${searchQuery}`).then(async(res)=>{
-            let searchResults = await res.json()
-            let searchResultsBody = $('#searchResultsContainer')[0]
-
-            // add title to canvas
-            let resultText = 'results'
-            if (searchResults.length==1) {resultText = 'result'}
-            $('#searchResultsTitle')[0].innerText = `Showing ${searchResults.length} ${resultText} for '${searchBar.value}'`
-
-
-            // add updates to canvas
-            for (let i=0;i<searchResults.length;i++) {
-                let update = searchResults[searchResults.length-(i+1)]
-
-                // handles getting pfp url
-                if (update.userId=='693191740961718400') {update.userId = '693191740961718420'}
-                let pfpUrl = `https://cdn.discordapp.com/avatars/${update.userId}/${update.userAvatar}`
-                if (!update.userAvatar || update.userAvatar == 'null') {pfpUrl = `https://cdn.discordapp.com/embed/avatars/0.png`}
-
-
-                let pinIFill = ''
-                let pinBtnMsg = 'Pin'
-                if (update.pinned) {
-                    pinIFill = '-fill'
-                    pinBtnMsg = 'Unpin'
-                }
-
-                let editedLabel = ''
-                if (update.edited) {editedLabel = `<span id="edited-label" class="ms-3" data-bs-toggle="tooltip" data-bs-title="${update.updatedAt.split('.')[0].replace('T',' @ ')} UTC">Edited ${timeStrToXYAgo(update.updatedAt)}</span>`}
-
-
-                searchResultsBody.innerHTML += `
-                    <div class="position-relative update-object container-fluid border-bottom border-top border-white p-4 update-${update._id}" data-timestamp="${update.userTimestamp}" data-location="${update.location}" data-vehicle="${update.vehicle}" data-body="${update.body}" data-pinned="${update.pinned}" data-userid="${update.userId}" data-edited=${update.edited} id="${update._id}">
-                        <div class="row align-items-center justify-content-start gy-3 g-lg-0">
-                        <div class="col-1 col-lg-1 d-inline-flex justify-content-center me-2 me-lg-0">
-                            <img src="${pfpUrl}" alt="PFP" class="pfp rounded-circle bg-secondary ratio ratio-1x1">
-                        </div>
-                        <div class="col-1 d-inline-flex justify-content-start ms-2">
-                            <p class="my-auto uploader" id="${update.userId}">@${update.userName}</p>
-                        </div>
-                        <div class="col-1 col-lg-1 d-inline-flex justify-content-start justify-content-lg-center ms-auto">
-                            <div class="container dropdown-msg-options flex-row">
-                                <div class="col">
-                                    <p role="button" class="jump-to-btn mb-0 d-flex align-items-center justify-content-center" data-bs-toggle="tooltip" data-bs-title="Jump To"><i class="bi bi-box-arrow-in-up"></i></p>
-                                </div>
-                                <div class="col">
-                                    <p role="button" class="copy-update-link-btn mb-0 d-flex align-items-center justify-content-center" data-bs-toggle="tooltip" data-bs-title="Copy Link"><i class="bi bi-link-45deg"></i></p>
-                                </div>
-                                <div class="col">
-                                    <p role="button" class="pin-update-btn mb-0 d-flex align-items-center justify-content-center" data-bs-toggle="tooltip" data-bs-title="${pinBtnMsg} Update"><i class="bi bi-pin-angle${pinIFill}"></i></p>
-                                </div>
-                                <div class="col">
-                                    <p role="button" class="edit-update-btn mb-0 d-flex align-items-center justify-content-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="bi bi-pencil-fill"></i></p>
-                                </div>
-                                <div class="col">
-                                    <p role="button" id="text-danger" class="delete-update-btn mb-0 text-danger d-flex align-items-center justify-content-center" data-bs-toggle="tooltip" data-bs-title="Delete"><i class="bi bi-trash3"></i></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            
-                    <div class="row mt-3 px-xl-4 px-1 text-secondary">
-                        <div class="col d-inline-flex justify-content-start px-xl-4 px-1" id="upload-and-edit-times" data-created-at="${update.createdAt}" data-edited-at="${update.updatedAt}">
-                            <p class="my-auto"><span id="time-since-upload-text" data-bs-toggle="tooltip" data-bs-title="${update.createdAt.split('.')[0].replace('T',' @ ')} UTC">${timeStrToXYAgo(update.createdAt)}</span> ${editedLabel}</p>
-                        </div>
-                    </div>
-            
-                    <div class="row mt-3 px-xl-4 px-1">
-                        <div class="col d-inline-flex justify-content-start px-xl-4 px-1">
-                            <p class="my-auto">${update.body}</p>
-                        </div>
-                    </div>
-            
-                    <div class="row mt-3 px-xl-4 px-1 gy-1">
-                        <div class="col-12 d-inline-flex justify-content-start px-xl-4 px-1">
-                            <i class="bi bi-clock"></i>
-                            <p class="my-auto ms-3">${update.userTimestamp.replace('T', '<span class="mx-2">|</span>')}</p>
-                        </div>
-                        <div class="col-12 d-inline-flex justify-content-start px-xl-4 px-1">
-                            <i class="bi bi-rocket-takeoff"></i>
-                            <p class="my-auto ms-3">${update.vehicle}</p>
-                        </div>
-                        <div class="col-12 d-inline-flex justify-content-start px-xl-4 px-1">
-                            <i class="bi bi-geo-alt"></i>
-                            <p class="my-auto ms-3">${update.location}</p>
-                        </div>
-                    </div>
-                    </div>
-                `
-            }
-
-            if (searchResults.length==0) {
-                searchResultsBody.innerHTML += `<p>No results.</p>`
-            }
-
-            // add functionality to btns
-            for (let i=0;i<$('#searchResultsContainer > div').length;i++) {
-                let updateElem = $('#searchResultsContainer > div')[i]
-                let updateId = updateElem.id
-                $(`#searchResultsContainer > div .pin-update-btn`)[i].onclick = ()=>{submitForm({
-                    "updateId": updateId,
-                    "timestamp": updateElem.getAttribute('data-timestamp'),
-                    "location": updateElem.getAttribute('data-location'),
-                    "vehicle": updateElem.getAttribute('data-vehicle'),
-                    "message": updateElem.getAttribute('data-body'),
-                    "userId": updateElem.getAttribute('data-userid'),
-                    "pinned": updateElem.getAttribute('data-pinned')
-                },true)}
-                $(`#searchResultsContainer > div .delete-update-btn`)[i].onclick = ()=>{deleteUpdate(updateId)}
-                $(`#searchResultsContainer > div .copy-update-link-btn`)[i].onclick = ()=>{copyLink(updateId, $(`#searchResultsContainer > div .copy-update-link-btn`)[i])}
-                $(`#searchResultsContainer > div .jump-to-btn`)[i].onclick = ()=>{closeSearchResults();jumpToMessage(updateId)}
-                $(`#searchResultsContainer > div .edit-update-btn`)[i].onclick = ()=>{toggleEditUpdateUI({
-                    "updateId": updateId,
-                    "timestamp": updateElem.getAttribute('data-timestamp'),
-                    "location": updateElem.getAttribute('data-location'),
-                    "vehicle": updateElem.getAttribute('data-vehicle'),
-                    "body": updateElem.getAttribute('data-body'),
-                    "userId": updateElem.getAttribute('data-userid')
-                })}
-            }
-            initTooltips()
-                
-            }).catch((err)=>{
-                // issue with search fetch
-                console.log(err)
-                notification([
-                    {
-                        "heading": "Search Failed",
-                        "body": err,
-                        "status": "danger"
-                    }
-                ])
-                return
-            })
-
-        // show canvas
-        let searchResultsOffCanvas = new bootstrap.Offcanvas('#searchResults')
-        searchResultsOffCanvas.show()
-    }
+    // show canvas
+    let searchResultsOffCanvas = new bootstrap.Offcanvas('#searchResults')
+    searchResultsOffCanvas.show()
 }

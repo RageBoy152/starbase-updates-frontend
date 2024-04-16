@@ -22,7 +22,13 @@ if (accessToken&&tokenType) {
         $('body')[0].classList.add('logged-in')
         pfpUrl = `https://cdn.discordapp.com/avatars/${res.id}/${res.avatar}?size=1024`
         if (!res.avatar) {pfpUrl = `https://cdn.discordapp.com/embed/avatars/0.png`}
-        $('#logInBtn')[0].innerHTML = `<a href=""><img src="${pfpUrl}" alt="PFP" class="pfp rounded-circle bg-secondary ratio ratio-1x1 me-2"> Logout</a>`
+        $('#logInBtn')[0].innerHTML = `
+            <img src="${pfpUrl}" alt="PFP" class="pfp rounded-circle bg-secondary ratio ratio-1x1 me-2">
+            <div class="d-flex flex-column">
+                <span class="col">@${res.username}</span>
+                <a href="" class="col">Logout</a>
+            </div>
+        `
     })
 }   else {
     loggedInUserInfo = {}
