@@ -63,7 +63,7 @@ export function appendUpdate(update,editedId) {
         <div class="row mt-3 px-xl-4 px-1 gy-1">
             <div class="col-12 d-inline-flex justify-content-start px-xl-4 px-1">
                 <i class="bi bi-clock"></i>
-                <p class="my-auto ms-3">${update.userTimestamp.replace('T', '<span class="mx-2">|</span>')} <span class="ms-2 text-secondary" style="font-size:0.9em;cursor:default">UTC-6 (CT)</span></p>
+                <p class="my-auto ms-3">${update.userTimestamp.replace('T', '<span class="mx-2">|</span>')} <span class="ms-2 text-secondary" style="font-size:0.9em;cursor:default" data-bs-toggle="tooltip" data-bs-title="All update timestamps are in UTC-6">UTC-6 (CT)</span></p>
             </div>
             <div class="col-12 d-inline-flex justify-content-start px-xl-4 px-1">
                 <i class="bi bi-rocket-takeoff"></i>
